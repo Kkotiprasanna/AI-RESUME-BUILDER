@@ -1,3 +1,4 @@
+
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
@@ -7,14 +8,24 @@ const resumeRoutes = require('./routes/resumes');
 const aiRoutes = require('./routes/ai');
 
 const app = express();
-app.use(cors());
+
+// Allow requests from your Vercel frontend
+app.use(cors({
+  origin: process.env.CLIENT_URL
+}));
+
 app.use(express.json({ limit: '2mb' }));
-app.get('/api/health', (_req, res) => res.json({ status: 'ok', app: 'AI Resume Builder' }));
+
+app.get('/api/health', (_req, res) =>
+  res.json({ status: 'ok', app: 'AI Resume Builder' })
+);
+
 app.use('/api/auth', authRoutes);
 app.use('/api/resumes', resumeRoutes);
 app.use('/api/ai', aiRoutes);
 
 const PORT = process.env.PORT || 5000;
+
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/ai_resume_builder')
   .then(() => {
     console.log('MongoDB connected');
