@@ -1,4 +1,4 @@
-const API = import.meta.env.VITE_API_URL || '';
+const API = (import.meta.env.VITE_API_URL || '/api').replace(/\/$/, '');
 export function token() { return localStorage.getItem('arb_token'); }
 export async function request(path, options = {}) {
   const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
